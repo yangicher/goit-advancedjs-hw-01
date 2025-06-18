@@ -8,6 +8,11 @@ const setStoredData = (data) => {
   }
 };
 
+const emailInput = form.elements.email;
+emailInput.addEventListener('focus', () => {
+  emailInput.placeholder = 'Enter your email';
+});
+
 const getStoredData = key => {
   try {
     const dataFromLS = localStorage.getItem(key);
