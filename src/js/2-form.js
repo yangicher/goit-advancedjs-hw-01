@@ -1,11 +1,9 @@
 const FORM_KEY = 'feedback-form-state';
 const form = document.querySelector('form');
-const setStoredData = (data) => {
-  try {
-    localStorage.setItem(FORM_KEY, JSON.stringify(data));
-  } catch (err) {
-    console.log(err);
-  }
+const messageTextarea = form.elements.message;
+const formData = {
+  email: '',
+  message: '',
 };
 
 const emailInput = form.elements.email;
@@ -13,56 +11,32 @@ emailInput.addEventListener('focus', () => {
   emailInput.placeholder = 'Enter your email';
 });
 
-const getStoredData = key => {
-  try {
-    const dataFromLS = localStorage.getItem(key);
-    return dataFromLS ? JSON.parse(dataFromLS) : null;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
-};
-
-const formData = {
-  email: '',
-  message: '',
-};
-
-const savedData = getStoredData(FORM_KEY);
-
+const savedData = localStorage.getItem(FORM_KEY);
 if (savedData) {
-  formData.email = savedData.email || '';
-  formData.message = savedData.message || '';
-  form.elements.email.value = formData.email;
-  form.elements.message.value = formData.message;
+  formData = JSON.parse(savedData);
+  emailInput.value = formData.email || '';
+  messageTextarea.value = formData.message || '';
 }
 
 const onFormFieldChange = event => {
-  const { target: formField } = event;
-
-  const fieldName = formField.name;
-  const fieldValue = formField.value;
-
-  formData[fieldName] = fieldValue;
-
-  setStoredData(formData);
+  const { name, value } = event.target;
+  formData[name] = value.trim()
+  localStorage.setItem(FORM_KEY, JSON.stringify(formData));
 };
 
 const onFeedbackFormSubmit = event => {
   event.preventDefault();
 
-  const formDataValues = Object.values(formData);
-
-  if (formDataValues.some(value => value.trim() === '')) {
-    alert('Fill please all fields!');
+  if (!formData.email || !formData.message) {
+    alert('Fill please all fields');
     return;
   }
 
-  formData.email = '';
-  formData.message = '';
+  console.log(formData);
 
-  event.currentTarget.reset();
   localStorage.removeItem(FORM_KEY);
+  formData = { email: "", message: "" };
+  form.reset();
 };
 
 form.addEventListener('input', onFormFieldChange);
