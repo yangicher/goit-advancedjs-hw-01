@@ -1,7 +1,7 @@
 const FORM_KEY = 'feedback-form-state';
 const form = document.querySelector('form');
 const messageTextarea = form.elements.message;
-const formData = {
+let formData = {
   email: '',
   message: '',
 };
